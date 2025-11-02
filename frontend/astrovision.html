@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Astro Insight Agent</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body { 
+            background-color: #0d1117; 
+            font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            color: #c9d1d9;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .header h1 {
+            color: #ffffff;
+            font-size: 28px;
+            margin-bottom: 8px;
+        }
+        .header p {
+            color: #8b949e;
+            font-size: 14px;
+        }
+        .cards {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+        .card {
+            background: #161b22;
+            border: 1px solid #30363d;
+            border-radius: 12px;
+            padding: 24px;
+        }
+        .card-title {
+            color: #ffffff;
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+        .upload-area {
+            border: 2px dashed #30363d;
+            border-radius: 8px;
+            padding: 40px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-bottom: 20px;
+        }
+        .upload-area:hover {
+            border-color: #238636;
+            background: #0a0c10;
+        }
+        .upload-area.dragover {
+            border-color: #238636;
+            background: #0a0c10;
+        }
+        .upload-icon {
+            color: #8b949e;
+            font-size: 40px;
+            margin-bottom: 12px;
+        }
+        .upload-text {
+            color: #8b949e;
+            font-size: 14px;
+        }
+        #file-input {
+            display: none;
+        }
+        .preview-container {
+            background: #0a0c10;
+            border: 2px solid #30363d;
+            border-radius: 8px;
+            min-height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+        .preview-container img {
+            max-width: 100%;
+            max-height: 300px;
+            object-fit: contain;
+        }
+        .preview-placeholder {
+            color: #8b949e;
+            font-size: 16px;
+        }
+        .analyze-btn {
+            width: 100%;
+            padding: 14px;
+            background: #238636;
+            color: #ffffff;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        .analyze-btn:hover:not(:disabled) {
+            background: #2ea043;
+        }
+        .analyze-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        .prompt-box {
+            background: #1f242b;
+            border-radius: 6px;
+            padding: 12px;
+            margin-bottom: 20px;
+        }
+        .prompt-label {
+            color: #8b949e;
+            font-size: 11px;
+            font-family: monospace;
+            margin-bottom: 8px;
+        }
+        .prompt-text {
+            color: #c9d1d9;
+            font-size: 12px;
+            font-family: monospace;
+            line-height: 1.6;
+        }
+        .output-box {
+            background: #101419;
+            border-radius: 8px;
+            padding: 20px;
+            min-height: 300px;
+        }
+        .output-placeholder {
+            color: #8b949e;
+            text-align: center;
+            padding: 40px 20px;
+        }
+        .output-content {
+            color: #c9d1d9;
+            line-height: 1.8;
+            font-size: 15px;
+        }
+        .output-content h3 {
+            color: #ffffff;
+            margin: 16px 0 8px 0;
+            font-size: 16px;
+        }
+        .output-content ul {
+            margin-left: 20px;
+            margin-bottom: 12px;
+        }
+        .output-content li {
+            margin-bottom: 6px;
+        }
+        .loading {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            padding: 40px;
+        }
+        .spinner {
+            width: 20px;
+            height: 20px;
+            border: 3px solid #30363d;
+            border-top-color: #238636;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        @media (max-width: 768px) {
+            .cards {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Astro Insight Agent</h1>
+            <p>AI-powered astronomical image analysis</p>
+        </div>
+
+        <div class="cards">
+            <!-- Upload Card -->
+            <div class="card">
+                <div class="card-title">1. Upload Image</div>
+                
+                <div class="upload-area" id="upload-area">
+                    <div class="upload-icon">📤</div>
+                    <div class="upload-text">Click or drag to upload image</div>
+                    <div class="upload-text" style="font-size: 12px; margin-top: 4px;">
+                        (JPEG, PNG, FITS)
+                    </div>
+                </div>
+                <input type="file" id="file-input" accept="image/*,.fit,.fits">
+
+                <div class="preview-container" id="preview-container">
+                    <div class="preview-placeholder">Image preview will appear here</div>
+                </div>
+
+                <button class="analyze-btn" id="analyze-btn" disabled>Analyze Image</button>
+            </div>
+
+            <!-- Insights Card -->
+            <div class="card">
+                <div class="card-title">2. AI Insights</div>
+
+                <div class="prompt-box">
+                    <div class="prompt-label">System Prompt:</div>
+                    <div class="prompt-text">
+                        You are an expert astronomical data analyst. Analyze the image, 
+                        describe celestial objects, identify key features like stars, 
+                        galaxies, nebulae, and provide detailed insights about composition, 
+                        brightness, and notable characteristics.
+                    </div>
+                </div>
+
+                <div class="output-box" id="output-box">
+                    <div class="output-placeholder">
+                        Insights will appear here after analysis...
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const uploadArea = document.getElementById('upload-area');
+        const fileInput = document.getElementById('file-input');
+        const previewContainer = document.getElementById('preview-container');
+        const analyzeBtn = document.getElementById('analyze-btn');
+        const outputBox = document.getElementById('output-box');
+        let currentImage = null;
+
+        // Upload area click
+        uploadArea.addEventListener('click', () => {
+            fileInput.click();
+        });
+
+        // Drag and drop
+        uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadArea.classList.add('dragover');
+        });
+
+        uploadArea.addEventListener('dragleave', () => {
+            uploadArea.classList.remove('dragover');
+        });
+
+        uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadArea.classList.remove('dragover');
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                handleFile(files[0]);
+            }
+        });
+
+        // File input change
+        fileInput.addEventListener('change', (e) => {
+            if (e.target.files.length > 0) {
+                handleFile(e.target.files[0]);
+            }
+        });
+
+        // Handle file upload
+        function handleFile(file) {
+            if (!file.type.startsWith('image/') && !file.name.endsWith('.fits') && !file.name.endsWith('.fit')) {
+                alert('Please upload an image file');
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                currentImage = e.target.result;
+                displayPreview(currentImage, file.name);
+                analyzeBtn.disabled = false;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        // Display image preview
+        function displayPreview(imageSrc, fileName) {
+            previewContainer.innerHTML = `<img src="${imageSrc}" alt="${fileName}">`;
+        }
+
+        // Analyze button click
+        analyzeBtn.addEventListener('click', () => {
+            if (!currentImage) return;
+            
+            analyzeBtn.disabled = true;
+            showLoading();
+            
+            // Simulate AI analysis with realistic delay
+            setTimeout(() => {
+                analyzeImage();
+                analyzeBtn.disabled = false;
+            }, 2000);
+        });
+
+        // Show loading state
+        function showLoading() {
+            outputBox.innerHTML = `
+                <div class="loading">
+                    <div class="spinner"></div>
+                    <div style="color: #8b949e;">Analyzing image...</div>
+                </div>
+            `;
+        }
+
+        // Simulate image analysis
+        function analyzeImage() {
+            const insights = generateInsights();
+            outputBox.innerHTML = `
+                <div class="output-content">
+                    ${insights}
+                </div>
+            `;
+        }
+
+        // Generate sample insights
+        function generateInsights() {
+            const analyses = [
+                {
+                    title: "Image Analysis",
+                    content: "The uploaded image appears to contain celestial objects with varying brightness levels and distinctive patterns characteristic of astronomical imagery."
+                },
+                {
+                    title: "Detected Features",
+                    items: [
+                        "Multiple point sources indicating potential stars",
+                        "Extended structures suggesting nebulae or galaxy formations",
+                        "Varying luminosity across the field of view",
+                        "Possible dust lanes or absorption regions"
+                    ]
+                },
+                {
+                    title: "Technical Observations",
+                    items: [
+                        "Image resolution: Suitable for preliminary analysis",
+                        "Dynamic range: Shows both bright and dim objects",
+                        "Background noise: Within acceptable levels",
+                        "Color depth: Adequate for feature identification"
+                    ]
+                },
+                {
+                    title: "Recommendations",
+                    content: "For more detailed analysis, consider using specialized astronomical software for photometry, astrometry, and spectral analysis. Cross-reference with star catalogs for precise object identification."
+                }
+            ];
+
+            let html = '<h3 style="margin-top: 0;">🔭 Analysis Results</h3>';
+            
+            analyses.forEach(section => {
+                html += `<h3>${section.title}</h3>`;
+                if (section.content) {
+                    html += `<p>${section.content}</p>`;
+                }
+                if (section.items) {
+                    html += '<ul>';
+                    section.items.forEach(item => {
+                        html += `<li>${item}</li>`;
+                    });
+                    html += '</ul>';
+                }
+            });
+
+            return html;
+        }
+    </script>
+</body>
+</html>

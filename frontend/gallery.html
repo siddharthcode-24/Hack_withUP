@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>JWST Image Gallery</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@3.4.1/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-black text-white min-h-screen p-6">
+
+  <div class="max-w-6xl mx-auto">
+    <div class="flex justify-between items-center mb-6">
+      <h1 class="text-3xl font-bold">JWST Test Gallery</h1>
+      <a href="index.html" class="bg-gray-700 hover:bg-gray-600 px-4 py-2 rounded-lg">⬅ Back to Home</a>
+    </div>
+
+    <div id="gallery" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6"></div>
+  </div>
+
+  <script>
+    // ✅ Replace with your Supabase project details
+     const SUPABASE_URL = "https://yourproject.supabase.co";
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind0cWV1dW9zcG90d3JkZXVuamFsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjE4OTkxOTksImV4cCI6MjA3NzQ3NTE5OX0.3N4fe4vtytqeThBxC2hrKwxejh-_iI5gVNjPdy6ruvI"; // anon key only
+
+const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+
+    async function loadGallery() {
+      const { data, error } = await supabase.from("gallery_images").select("*").order("id", { ascending: false });
+      const container = document.getElementById("gallery");
+
+      if (error) {
+        container.innerHTML = `<p class="text-red-500">Error loading images: ${error.message}</p>`;
+        console.error(error);
+        return;
+      }
+
+      if (!data || data.length === 0) {
+        container.innerHTML = `<p class="text-gray-400">No images yet. Please upload some.</p>`;
+        return;
+      }
+
+      container.innerHTML = data.map(img => `
+        <div class="bg-gray-800 p-4 rounded-xl shadow-md">
+          <img src="${img.image_url}" alt="${img.title}" class="w-full h-56 object-cover rounded-lg mb-3">
+          <h2 class="text-center text-lg font-semibold">${img.title}</h2>
+        </div>
+      `).join('');
+    }
+
+    loadGallery();
+  </script>
+</body>
+</html>
