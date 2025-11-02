@@ -1,11 +1,17 @@
-# 🔭 Astro Insight Agent
+# 🔭 AstroVision
 
 An AI-powered astronomical image analysis tool with an intuitive web interface for analyzing celestial images.
 
 ![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)
 ![License](https://img.shields.io/badge/license-MIT-green.svg)
+##Features(Core model)
+- **Data Loading**: Loading FITS files with accurate metadata extraction
+- **Contrast enhancement**: Linear stretching is used to implement contrast enhancement and dynamic range compression is implemented using astropy and numpy
+- **Image alignment and reprojection**: Performed using numpy
+- **Wavelength based colorization**: Algorithms from sci-kitlearn are used for assigning different colours to different wavelengths
+- **Layer blending for final composite creation**: Layers of all images obtained across all spectrums from JWST's sensors are superimposed to form one final composite image, ready for analysis.
 
-## ✨ Features
+## ✨ Features(Web interface)
 
 - **📤 Image Upload**: Drag-and-drop or click to upload astronomical images
 - **🖼️ Live Preview**: Real-time image preview before analysis
