@@ -4,7 +4,9 @@ An AI-powered astronomical image analysis tool with an intuitive web interface f
 
 ![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)
 ![License](https://img.shields.io/badge/license-MIT-green.svg)
-</br> ## Features(Core model)
+
+
+## Features(Core model)
 - **Data Loading**: Loading FITS files with accurate metadata extraction
 - **Contrast enhancement**: Linear stretching is used to implement contrast enhancement and dynamic range compression is implemented using astropy and numpy
 - **Image alignment and reprojection**: Performed using numpy
