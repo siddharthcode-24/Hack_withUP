@@ -30,8 +30,8 @@ An AI-powered astronomical image analysis tool with an intuitive web interface f
 
 1. **Clone or Download the Repository**
    ```bash
-   git clone https://github.com/yourusername/astro-insight-agent.git
-   cd astro-insight-agent
+   git clone https://github.com/siddharthcode-24/Hack_withUP.git
+   cd Hack_withUP
    ```
 
 2. **File Structure**
@@ -277,8 +277,8 @@ SOFTWARE.
 ## 👨‍💻 Author
 
 **Your Name**
-- GitHub: [@yourusername](https://github.com/yourusername)
-- Email: your.email@example.com
+- GitHub: [@siddharthcode-24](https://github.com/siddharthcode-24)
+- Email: siddharthbajaj24@example.com
 
 ## 🙏 Acknowledgments
 
@@ -308,7 +308,7 @@ SOFTWARE.
 
 Having issues? Here's how to get help:
 
-1. Check the [Issues](https://github.com/yourusername/astro-insight-agent/issues) page
+1. Check the [Issues](https://github.com/siddharthcode-24/Hack_withUP/issues) page
 2. Create a new issue with detailed description
 3. Contact via email: support@example.com
 
