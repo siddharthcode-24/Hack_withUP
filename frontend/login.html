@@ -6,6 +6,7 @@
   <title>Astrovision - Login</title>
 
   <!-- Supabase JS Client -->
+   <script src="config.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <style>
@@ -175,10 +176,7 @@
 
   <script>
     // ========== SUPABASE CONFIGURATION ==========
-     const SUPABASE_URL = "https://yourproject.supabase.co";
-    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind0cWV1dW9zcG90d3JkZXVuamFsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjE4OTkxOTksImV4cCI6MjA3NzQ3NTE5OX0.3N4fe4vtytqeThBxC2hrKwxejh-_iI5gVNjPdy6ruvI"; // anon key only
-
-   const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+     const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 
     // ========== PARTICLE BACKGROUND ==========
